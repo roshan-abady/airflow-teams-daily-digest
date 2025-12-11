@@ -86,7 +86,7 @@ This pragmatic solution delivers the desired functionality while working within 
 
 - `generate_morning_digest_stats()`: Main function that:
   - Queries Airflow metadata database for DAG runs
-  - Filters DAGs by owner (`operations-analytics`, `product-analytics`)
+  - Filters DAGs by owner (configurable, e.g., `operations-analytics`, `product-analytics`)
   - Handles task-level monitoring for multi-project DAGs
   - Calculates streak (consecutive days without failures)
   - Generates clickable URLs to Airflow DAG runs
@@ -106,7 +106,7 @@ This pragmatic solution delivers the desired functionality while working within 
 **Purpose**: Sends formatted HTML email to Teams channel.
 
 **Configuration**:
-- Recipient: Teams channel email address
+- Recipient: Teams channel email address (configurable)
 - Subject: Dynamic based on status emoji and date
 - Content: Jinja2 template with embedded HTML/CSS
 
@@ -168,7 +168,7 @@ split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Runnin
    - Lists up to 6 failed DAGs
 
 4. **Actions**:
-   - Button to open Airflow dashboard
+   - Button to open Airflow dashboard (URL configurable)
 
 ## Data Transformation
 
@@ -201,7 +201,7 @@ Teams rendering
 ## Timezone Handling
 
 - **Airflow**: Stores all timestamps in UTC
-- **Display**: Converts to Australia/Melbourne (AEST/AEDT)
+- **Display**: Converts to Australia/Melbourne (AEST/AEDT) - configurable
 - **Power Automate**: Uses `convertFromUtc()` function for display
 
 ## Error Handling
@@ -209,7 +209,7 @@ Teams rendering
 ### Airflow DAG
 
 - URL generation failures: Falls back to basic DAG grid URL
-- Missing Airflow URL variable: Uses hardcoded default
+- Missing Airflow URL variable: Uses hardcoded default (configurable)
 - Local development: Disables email sending, prints preview
 
 ### Power Automate
