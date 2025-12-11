@@ -1,0 +1,177 @@
+{
+    "type": "AdaptiveCard",
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "version": "1.4",
+    "body": [
+        {
+            "type": "Container",
+            "style": "@{if(contains(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed'), if(greater(int(split(split(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed ')[1], ' 🔄')[0]), 0), 'attention', 'good'), 'good')}",
+            "items": [
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "auto",
+                            "items": [
+                                {
+                                    "type": "Image",
+                                    "url": "https://raw.githubusercontent.com/apache/airflow/19ebcac2395ef9a6b6ded3a2faa29dc960c1e635/docs/apache-airflow/img/logos/wordmark_1.png",
+                                    "width": "160px"
+                                }
+                            ],
+                            "verticalContentAlignment": "Center"
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Airflow Daily Digest",
+                                    "weight": "Bolder",
+                                    "size": "Large",
+                                    "color": "Light"
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "text": "@{convertFromUtc(utcNow(), 'AUS Eastern Standard Time', 'dd/MM/yyyy hh:mm tt')}",
+                                    "spacing": "None",
+                                    "isSubtle": true,
+                                    "size": "Small",
+                                    "color": "Light"
+                                }
+                            ],
+                            "verticalContentAlignment": "Center"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "✅ Succeeded",
+                            "size": "Small",
+                            "weight": "Bolder"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "@{if(contains(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '✅ Succeeded'), split(split(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '✅ Succeeded ')[1], ' ❌')[0], '0')}",
+                            "size": "ExtraLarge",
+                            "weight": "Bolder",
+                            "color": "Good"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "❌ Failed",
+                            "size": "Small",
+                            "weight": "Bolder"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "@{if(contains(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed'), split(split(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed ')[1], ' 🔄')[0], '0')}",
+                            "size": "ExtraLarge",
+                            "weight": "Bolder",
+                            "color": "Attention"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "🔄 Running",
+                            "size": "Small",
+                            "weight": "Bolder"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "@{if(contains(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '🔄 Running'), split(split(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '🔄 Running ')[1], ' 🔥')[0], '0')}",
+                            "size": "ExtraLarge",
+                            "weight": "Bolder",
+                            "color": "Warning"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "🔥 Streak",
+                            "size": "Small",
+                            "weight": "Bolder"
+                        },
+                        {
+                            "type": "TextBlock",
+                            "text": "@{if(contains(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '🔥 Streak'), split(split(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '🔥 Streak ')[1], ' 💡')[0], '0d')}",
+                            "size": "ExtraLarge",
+                            "weight": "Bolder",
+                            "color": "Accent"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "TextBlock",
+            "text": "@{if(greater(int(if(contains(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed'), split(split(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed ')[1], ' 🔄')[0], '0')), 0), concat('⚠️ Failed DAGs: ', if(contains(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed'), split(split(replace(body('Html_to_text'), decodeUriComponent('%0A'), ' '), '❌ Failed ')[1], ' 🔄')[0], '0')), '✅ All DAGs Succeeded')}",
+            "weight": "Bolder",
+            "separator": true,
+            "spacing": "Medium"
+        },
+        {
+            "type": "TextBlock",
+            "text": "@{if(and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 2), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 2), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[1], ' ')[0], ''), ''))), concat('• ', if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 2), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[1], ' ')[0], '')), '')}",
+            "wrap": true,
+            "$when": "@{and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 2), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 2), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[1], ' ')[0], ''), '')))}"
+        },
+        {
+            "type": "TextBlock",
+            "text": "@{if(and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 3), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 3), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[2], ' ')[0], ''), ''))), concat('• ', if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 3), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[2], ' ')[0], '')), '')}",
+            "wrap": true,
+            "$when": "@{and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 3), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 3), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[2], ' ')[0], ''), '')))}"
+        },
+        {
+            "type": "TextBlock",
+            "text": "@{if(and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 4), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 4), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[3], ' ')[0], ''), ''))), concat('• ', if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 4), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[3], ' ')[0], '')), '')}",
+            "wrap": true,
+            "$when": "@{and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 4), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 4), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[3], ' ')[0], ''), '')))}"
+        },
+        {
+            "type": "TextBlock",
+            "text": "@{if(and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 5), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 5), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[4], ' ')[0], ''), ''))), concat('• ', if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 5), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[4], ' ')[0], '')), '')}",
+            "wrap": true,
+            "$when": "@{and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 5), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 5), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[4], ' ')[0], ''), '')))}"
+        },
+        {
+            "type": "TextBlock",
+            "text": "@{if(and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 6), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 6), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[5], ' ')[0], ''), ''))), concat('• ', if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 6), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[5], ' ')[0], '')), '')}",
+            "wrap": true,
+            "$when": "@{and(contains(body('Html_to_text'), '⚠️ Failed DAGs:'), greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 6), not(equals(if(greaterOrEquals(length(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')), 6), split(split(split(split(body('Html_to_text'), '⚠️ Failed DAGs:')[1], 'Still Running')[0], '* ')[5], ' ')[0], ''), '')))}"
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.OpenUrl",
+            "title": "View in Airflow",
+            "url": "https://ap-workflows.svc.platform.myob.com/home?status=failed"
+        }
+    ]
+}
