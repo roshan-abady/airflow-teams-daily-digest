@@ -15,15 +15,16 @@ import os
 import re
 
 local_tz = pendulum.timezone("Australia/Melbourne")
-environment = conf.get('myob_ap', 'environment', fallback='local')
+# Update this to match your Airflow configuration section name
+environment = conf.get('airflow', 'environment', fallback='local')
 
 # Check if we're running locally
 is_local = environment == 'local' or os.getenv('AIRFLOW_ENV') == 'local'
 
 default_args = {
-    'workflow_id': 'afc9d130-e66a-47d1-8e1f-25c6a02e9b73',
-    'email': ["ops_data_transformation@myob.com", "c5d07907.groups.myob.com@au.teams.ms"],
-    'owner': 'operations-analytics',
+    'workflow_id': 'your-workflow-id-here',  # Replace with your workflow ID or remove if not needed
+    'email': ["your-email@company.com", "your-teams-channel@au.teams.ms"],  # Update with your email addresses
+    'owner': 'operations-analytics',  # Update with your team name
     'start_date': datetime(2025, 11, 1, tzinfo=local_tz),
     'email_on_failure': False,
     'email_on_retry': False,
@@ -88,9 +89,9 @@ def generate_morning_digest_stats(session=None, **context):
         except Exception:
             airflow_url = None
     
-    # Hardcode base URL if variable is not set (based on sample URL provided)
+    # Hardcode base URL if variable is not set - UPDATE THIS WITH YOUR AIRFLOW URL
     if not airflow_url:
-        airflow_url = 'https://ap-workflows.svc.platform.myob.com'
+        airflow_url = 'https://your-airflow-instance.com'
     
     print(f"Airflow URL: {airflow_url}")
     
@@ -128,8 +129,8 @@ def generate_morning_digest_stats(session=None, **context):
     dagbag = DagBag()
     included_dag_ids = set()
     
-    # Always include specific DAGs
-    included_dag_ids.add('fs_getting_paid')
+    # Always include specific DAGs - UPDATE THIS LIST WITH YOUR DAG IDs
+    included_dag_ids.add('example_important_dag')
     
     for dag_id, dag in dagbag.dags.items():
         # Check if DAG has owner='operations-analytics' or 'product-analytics' in default_args
@@ -139,6 +140,7 @@ def generate_morning_digest_stats(session=None, **context):
         elif hasattr(dag, 'default_args') and dag.default_args.get('owner'):
             dag_owner = dag.default_args.get('owner')
         
+        # UPDATE THESE OWNER NAMES TO MATCH YOUR TEAM STRUCTURE
         if dag_owner in ['operations-analytics', 'product-analytics']:
             included_dag_ids.add(dag_id)
     
@@ -178,7 +180,7 @@ def generate_morning_digest_stats(session=None, **context):
         included_dag_ids = set()
         
         # Always include specific DAGs
-        included_dag_ids.add('fs_getting_paid')
+        included_dag_ids.add('example_important_dag')
         
         for dag_id, dag in dagbag.dags.items():
             dag_owner = None
@@ -193,12 +195,13 @@ def generate_morning_digest_stats(session=None, **context):
         failed_runs_filtered = [dr for dr in failed_runs if dr.dag_id in included_dag_ids]
         
         # Also check task-level DAGs (DAGs with multiple projects in loops)
+        # UPDATE THIS LIST WITH YOUR TASK-LEVEL DAG IDs
         task_level_dags = [
             'common_schedules',
-            'fs_getting_paid',
+            'example_important_dag',
             'product_analytics_transform',
             'product_analytics_transform_weekly',
-            'sme_inventory_management_sf'
+            'example_inventory_management'
         ]
         failed_tasks = session.query(TaskInstance).join(
             DagRun, 
@@ -223,10 +226,10 @@ def generate_morning_digest_stats(session=None, **context):
     # Separate task-level DAGs (DAGs with multiple projects in loops) from other DAGs
     task_level_dag_ids = [
         'common_schedules',
-        'fs_getting_paid',
+        'example_important_dag',
         'product_analytics_transform',
         'product_analytics_transform_weekly',
-        'sme_inventory_management_sf'
+        'example_inventory_management'
     ]
     task_level_runs = [dr for dr in dag_runs if dr.dag_id in task_level_dag_ids]
     other_dag_runs = [dr for dr in dag_runs if dr.dag_id not in task_level_dag_ids]
@@ -469,9 +472,9 @@ with DAG(
             
             send_digest = EmailOperator(
                 task_id='send_digest_to_teams',
-                to=['c5d07907.groups.myob.com@au.teams.ms'],
+                to=['your-teams-channel@au.teams.ms'],  # UPDATE WITH YOUR TEAMS CHANNEL EMAIL
                 subject='{{ ti.xcom_pull(task_ids="generate_morning_stats")["status_emoji"] }} Airflow Digest {{ ti.xcom_pull(task_ids="generate_morning_stats")["timestamp"].split()[0] }}',
-                html_content=""
+                html_content="""
                 {% set stats = ti.xcom_pull(task_ids="generate_morning_stats") %}
                 <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto;">
                     <div style="background: white; padding: 20px; border: 1px solid #e1e8ed; border-radius: 8px;">
