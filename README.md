@@ -90,15 +90,20 @@ This email-based approach provides a pragmatic solution that works within existi
 ### 1. Airflow Configuration
 
 1. Copy `src/daily_digest.py` to your Airflow `dags/` directory
-2. Set Airflow Variables:
+2. **Update configuration values** in `daily_digest.py`:
+   - Line 18: Update Airflow configuration section name (default: `'airflow'`)
+   - Line 25: Update email addresses with your Teams channel email
+   - Line 26: Update owner name to match your team structure
+   - Line 93: Update default Airflow URL (or set via Airflow Variable)
+   - Line 132, 181: Update DAG IDs to monitor
+   - Line 142: Update owner names to filter
+   - Line 196-201, 224-229: Update task-level DAG IDs
+   - Line 472: Update Teams channel email address
+3. Set Airflow Variables:
    ```bash
    airflow variables set airflow_url "https://your-airflow-instance.com"
    ```
-3. Configure SMTP settings in `airflow.cfg` or via connections
-4. Update the Teams channel email address in the DAG (line 25):
-   ```python
-   'email': ["your-teams-channel@au.teams.ms"]
-   ```
+4. Configure SMTP settings in `airflow.cfg` or via connections
 
 ### 2. Power Automate Setup
 
@@ -107,7 +112,8 @@ This email-based approach provides a pragmatic solution that works within existi
 3. Add an "HTML to text" action to extract email content
 4. Add an "Post adaptive card in a chat or channel" action
 5. Import the Adaptive Card JSON from `power-automate/adaptive_card.json`
-6. Map the email content to the Adaptive Card template expressions
+6. **Update the Airflow URL** in the Adaptive Card JSON (line 174) with your Airflow instance URL
+7. Map the email content to the Adaptive Card template expressions
 
 ### 3. Schedule Configuration
 
@@ -121,14 +127,11 @@ schedule_interval='0 10 * * *'  # Daily at 10 AM
 
 The system monitors:
 
-- All DAGs with `owner='operations-analytics'` or `owner='product-analytics'`
-- Specific DAGs regardless of owner (e.g., `fs_getting_paid`)
-- Task-level status for multi-project DAGs:
-  - `common_schedules`
-  - `fs_getting_paid`
-  - `product_analytics_transform`
-  - `product_analytics_transform_weekly`
-  - `sme_inventory_management_sf`
+- All DAGs with `owner='operations-analytics'` or `owner='product-analytics'` (configurable)
+- Specific DAGs regardless of owner (configurable in code)
+- Task-level status for multi-project DAGs (configurable list)
+
+**Note**: Update the filtering logic in `generate_morning_digest_stats()` to match your DAG structure and naming conventions.
 
 ## 🎨 Adaptive Card Features
 
@@ -215,7 +218,7 @@ This project is provided as-is for reference and educational purposes.
 
 ## 🙏 Acknowledgments
 
-Built for the Operations Analytics team at MYOB to improve daily workflow visibility and team collaboration.
+Built to improve daily workflow visibility and team collaboration through automated monitoring and reporting.
 
 ---
 
