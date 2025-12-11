@@ -171,7 +171,7 @@
         {
             "type": "Action.OpenUrl",
             "title": "View in Airflow",
-            "url": "https://ap-workflows.svc.platform.myob.com/home?status=failed"
+            "url": "https://your-airflow-instance.com/home?status=failed"
         }
     ]
 }
