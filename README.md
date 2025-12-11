@@ -22,6 +22,18 @@ Airflow DAG → Email (HTML) → Power Automate → Teams Adaptive Card
 3. **Power Automate Flow**: Receives email, extracts content, and formats as Adaptive Card
 4. **Microsoft Teams**: Displays the card in the channel
 
+## 🤔 Why Email Instead of Webhooks?
+
+**Design Decision**: This solution uses email as the integration mechanism rather than direct Airflow webhooks or API calls to Teams.
+
+**Rationale**:
+- **Access Constraints**: Direct webhook access to Airflow's infrastructure requires platform team approval and elevated permissions that were not available
+- **Security Concerns**: The platform team had security concerns about exposing webhook endpoints or granting outbound API access from Airflow to external services
+- **Existing Infrastructure**: Email infrastructure was already configured and approved for use, requiring no additional security reviews
+- **Power Automate Capabilities**: Power Automate's email trigger provides a reliable, no-code integration point that doesn't require API credentials or webhook management
+
+This email-based approach provides a pragmatic solution that works within existing security constraints while still delivering the desired functionality.
+
 ## 📁 Project Structure
 
 ```
